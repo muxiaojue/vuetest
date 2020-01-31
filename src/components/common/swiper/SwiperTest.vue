@@ -39,7 +39,7 @@ export default {
       // 传入的swiper个数
       currentIndex: 0,
       // 当前swiper的index
-      style: null
+      style: null,
       // swiper的样式
     }
   },
@@ -107,6 +107,9 @@ export default {
     isActive(index) {
       return {active: index === this.currentIndex - 1}
     },
+
+    
+    
   },
   
 }
@@ -127,7 +130,7 @@ export default {
     width:100%;
     height: 100%;
   }
-    .indicator {
+  .indicator {
     display: flex;
     justify-content: center;
     position: absolute;

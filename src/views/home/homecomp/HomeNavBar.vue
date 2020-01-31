@@ -19,5 +19,8 @@ export default {
   .home-nav {
     background-color: salmon;
     color: #fff;
+    /* z-index: 5; */
+    /* position: sticky;
+    top: 0; */
   }
 </style>

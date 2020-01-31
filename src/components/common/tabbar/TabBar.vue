@@ -13,7 +13,7 @@ export default {
 <style>
   #tab-bar{
     display: flex;
-    background-color: rgba(241, 231, 85, 0.726);
+    background-color: #f6f6f6;
     position: fixed;
     bottom: 0px;
     left: 0px;

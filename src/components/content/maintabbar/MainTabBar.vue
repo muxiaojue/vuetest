@@ -67,5 +67,7 @@ export default {
 </script>
 
 <style>
-
+  #tab-bar {
+    z-index: 100;
+  }
 </style>
