@@ -48,7 +48,7 @@
 
         // 2.开启定时器
         this.startTimer();
-      }, 200)
+      }, 400)
     },
     methods: {
 		  /**
@@ -149,6 +149,9 @@
 
         // 3.保存开始滚动的位置
         this.startX = e.touches[0].pageX;
+
+        console.log('start');
+        
       },
 
       touchMove: function (e) {
@@ -161,6 +164,9 @@
 
         // 2.设置当前的位置
         this.setTransform(moveDistance);
+
+        console.log('onmove');
+        
       },
 
       touchEnd: function (e) {
@@ -182,6 +188,9 @@
 
         // 4.移动完成后重新开启定时器
         this.startTimer();
+
+        console.log('end');
+        
       },
 
       /**

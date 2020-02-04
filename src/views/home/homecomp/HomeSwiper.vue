@@ -1,15 +1,15 @@
 <template>
-  <swiper-test>
+  <swiper>
     <swiper-item v-for="(item, index) in banners" :key="index">
       <a :href="item.link">
         <img :src="item.image" alt="" @load="imgLoad">
       </a>
     </swiper-item>
-  </swiper-test>
+  </swiper>
 </template>
 
 <script>
-  import {SwiperTest, SwiperItem} from 'components/common/swiper'
+  import {Swiper, SwiperItem} from 'components/common/swiper'
 
   export default {
     name: "HomeSwiper",
@@ -27,7 +27,7 @@
       }
     },
     components: {
-      SwiperTest,
+      Swiper,
       SwiperItem
     },
     methods: {

@@ -1,6 +1,10 @@
 <template>
   <div class="good-lists-item">
-    <img :src="goodsItem.show.img" alt="" @load="imgLoad">
+    <img 
+      :src="getImg" 
+      alt="" 
+      @load="imgLoad" 
+      @click="imgClick">
 
     <div class="good-info">
       <p>{{goodsItem.title}}</p>
@@ -20,15 +24,23 @@ export default {
       }
     }
   },
+  computed: {
+    getImg() {
+      return this.goodsItem.img || this.goodsItem.image || this.goodsItem.show.img
+    }
+  },
   methods: {
     imgLoad() {
-      this.$bus.$emit('imgLoad')
+      this.$bus.$emit('goodImgLoad')
+    },
+    imgClick() {
+      this.$router.push('/detail/' + this.goodsItem.iid)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   .good-lists-item {
     width: 48%;
     /* flex: 48%; */
@@ -42,7 +54,7 @@ export default {
   .good-info {
     font-size: 14px;
     position: absolute;
-    bottom: 5px;
+    bottom: 0.5%;
     left: 0;
     right: 0;
     overflow: hidden;

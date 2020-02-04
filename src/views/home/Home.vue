@@ -43,8 +43,10 @@ import Scroll from 'components/common/scroll/Scroll.vue'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home.js'
 import {debounce} from 'common/tools.js'
+import {mixin} from 'common/mixin.js'
 
 export default {
+  mixins: [mixin],
   data() {
     return {
       banners: [],
@@ -59,6 +61,7 @@ export default {
       isShow: false,
       tabOffsetTop: 0,
       isTabFixed: false,
+      scrollY: 0,
     }
   },
   components: {
@@ -81,15 +84,19 @@ export default {
     
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 500)
-    // 防抖，让多次执行的操作只执行最后一次
-    this.$bus.$on('imgLoad', () => {
-      refresh()
-      // this.$refs.scroll.refresh()
-      // 监听goodListsItem中的图片加载，加载一张执行一次$on中的函数一次
-      // 解决bscroll计算滚动scrollHeight与请求图片数据的异步冲突导致的滚动区域错误
+    
+    // 这个防抖刷新已混入
+    // const refresh = debounce(this.$refs.scroll.refresh, 500)
+    // // 防抖，让多次执行的操作只执行最后一次
+    // this.$bus.$on('goodImgLoad', () => {
+    //   refresh()
+    //   console.log('home refresh');
+      
+    //   // this.$refs.scroll.refresh()
+    //   // 监听goodListsItem中的图片加载，加载一张执行一次$on中的函数一次
+    //   // 解决bscroll计算滚动scrollHeight与请求图片数据的异步冲突导致的滚动区域错误
 
-    })
+    // })
   },
   // updated() {
   // 用updated阶段计算offsetTop时，图片似乎没有完成渲染？
@@ -104,6 +111,23 @@ export default {
     
     
   // },
+  activated() {
+    this.$refs.scroll.refresh()
+    this.$refs.scroll.scrollTo(0, this.scrollY, 0)
+    // 设置第三个参数为0时，上拉加载切换tabber有可能回弹到顶部，改为1解决
+    
+  },
+  deactivated() {
+    this.scrollY = this.$refs.scroll.getScrollY()
+    // 离开首页时保存当前滚动距离
+    this.$bus.$off('goodImgLoad', this.imgListener)
+    // console.log(this.$bus._events);
+    // 离开首页时取消goodListsItem加载的事件总线监听
+  },
+  destroyed() {
+    console.log('destroyed');
+    
+  },
   computed: {
     showGoods() {
       return this.homeGoods[this.currentType].list
@@ -121,7 +145,7 @@ export default {
       const page = this.homeGoods[type].page + 1
       
       getHomeGoods(type, page).then(res => {
-        this.homeGoods[type].list.push(...res.data.list)
+        this.homeGoods[type].list.push(...res.data.list)        
         this.homeGoods[type].page = page
       })
     },
