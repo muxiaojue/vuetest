@@ -1,7 +1,7 @@
 <template>
   <swiper class="detail-swiper" v-if="images.length">
     <swiper-item v-for="(item,index) in images" :key="index" class="detail-image">
-      <img :src="item" alt="">
+      <img :src="item" alt="" @load="imgLoad">
     </swiper-item>
   </swiper>
 </template>
@@ -17,9 +17,24 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      isLoad: false
+    }
+  },
   components: {
     Swiper,
     SwiperItem
+  },
+  methods: {
+    imgLoad() {
+      if(!this.isLoad) {
+        this.$emit('swiperImgLoad')
+      }
+      else {
+        this.isLoad = true
+      }
+    }
   }
 }
 </script>

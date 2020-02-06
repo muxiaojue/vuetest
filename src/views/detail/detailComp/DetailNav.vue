@@ -38,6 +38,7 @@ export default {
   methods: {
     titleClick(index) {
       this.currentIndex = index
+      this.$emit('titleClick', index)
     },
     back() {
       this.$router.back()
@@ -59,6 +60,6 @@ export default {
   }
   .active {
     color: palevioletred;
-    border-bottom: 3px palevioletred solid;
+    /* border-bottom: 5px palevioletred solid; */
   }
 </style>

@@ -16,7 +16,7 @@
       <span>{{comment.style}}</span>
     </div>
     <div class="comment-img" v-if="comment.images">
-      <img :src="item" v-for="(item,index) in comment.images" :key="index" alt="">
+      <img :src="item" v-for="(item,index) in comment.images" :key="index" alt="" @click="comImgLoad">
     </div>
   </div>
 </template>
@@ -40,10 +40,12 @@ export default {
       // return formatDate(date, 'yyyy-MM-dd')
     }
   },
-  updated() {
-    // console.log(this.comment);
-    
+  methods: {
+    comImgLoad() {
+      this.$emit('comImgLoad')
+    }
   }
+
 }
 </script>
 
@@ -88,5 +90,6 @@ export default {
   .comment-img img {
     flex: auto;
     width: 100%;
+    margin-right: 3%;
   }
 </style>

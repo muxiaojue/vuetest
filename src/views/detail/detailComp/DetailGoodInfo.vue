@@ -5,7 +5,8 @@
       <span class="new-price">{{goodInfo.price}}</span>
       <span class="old-price">{{goodInfo.oldPrice}}</span>
       <span class="discount" 
-        :style="{backgroundColor: goodInfo.discountBgColor}">
+        :style="{backgroundColor: goodInfo.discountBgColor}"
+        v-if="goodInfo.discountDesc">
           {{goodInfo.discountDesc}}
       </span>
     </div>
@@ -63,7 +64,7 @@ export default {
   .discount {
     border-radius: 8px; 
     color: #fff;
-    padding: 0 1%;
+    padding: 0 2% 0 1%;
     position: relative;
     top: -4px;
   }

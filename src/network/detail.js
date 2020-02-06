@@ -20,6 +20,7 @@ export class goodInfo {
     this.title = itemInfo.title
     this.oldPrice = itemInfo.oldPrice
     this.price = itemInfo.price
+    this.truePrice = itemInfo.lowNowPrice
     this.discountDesc = itemInfo.discountDesc
     this.discountBgColor = itemInfo.discountBgColor
     this.columns = columns

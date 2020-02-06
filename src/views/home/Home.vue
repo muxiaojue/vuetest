@@ -25,7 +25,7 @@
           ref="tabControlFixed"/>
         <good-lists :goods="showGoods"/>
     </scroll>
-    <back-top @backImgClick="backImgClick" v-show="isShow"/>
+    <back-top @backImgClick="backImgClick" v-show="isBackTopShow"/>
   </div>
 </template>
 
@@ -37,16 +37,15 @@ import HomeFeature from './homeComp/HomeFeature.vue'
 
 import TabControl from 'components/content/tabControl/TabControl.vue'
 import GoodLists from 'components/content/goodLists/GoodLists.vue'
-import BackTop from 'components/content/backTop/BackTop.vue'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home.js'
 import {debounce} from 'common/tools.js'
-import {mixin} from 'common/mixin.js'
+import {goodRefreshMixin, backTop} from 'common/mixin.js'
 
 export default {
-  mixins: [mixin],
+  mixins: [goodRefreshMixin, backTop],
   data() {
     return {
       banners: [],
@@ -58,7 +57,6 @@ export default {
         'sell': {page: 0, list: []},
       },
       currentType: 'pop',
-      isShow: false,
       tabOffsetTop: 0,
       isTabFixed: false,
       scrollY: 0,
@@ -71,7 +69,6 @@ export default {
     HomeFeature,
     TabControl,
     GoodLists,
-    BackTop,
     Scroll,
   },
   created() {
@@ -155,11 +152,8 @@ export default {
       this.$refs.tabControlFixed.currentIndex = index
       this.$refs.tabControlSlide.currentIndex = index
     },
-    backImgClick() {
-      this.$refs.scroll.scrollTo(0, 0)
-    },
     scroll(position) {
-      this.isShow = position.y < -1000
+      this.isBackTopShow = position.y < -1000
 
       this.isTabFixed = this.tabOffsetTop < -position.y
     },

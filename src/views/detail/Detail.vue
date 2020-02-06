@@ -1,15 +1,17 @@
 <template>
   <div class="detail">
-    <detail-nav/>
-    <scroll ref="scroll">
-      <detail-swiper :images="swiperImgs"/>
+    <detail-nav @titleClick="titleClick" ref="nav"/>
+    <scroll ref="scroll" @scroll="scroll" :probeType="3">
+      <detail-swiper :images="swiperImgs" @swiperImgLoad="swiperImgLoad"/>
       <detail-good-info :goodInfo="goodInfo" />
       <detail-shop-info :shopInfo="shopInfo"/>
-      <detail-good-show :goodDetail="goodDetail" @detailImgLoad="refresh"/>
-      <detail-param-info :paramInfo="paramInfo"/>
-      <detail-comment :comment="comment"/>
+      <detail-good-show :goodDetail="goodDetail" @detailImgLoad="detailRefresh"/>
+      <detail-param-info :paramInfo="paramInfo" ref="param"/>
+      <detail-comment :comment="comment" ref="comment" @comImgLoad="comImgLoad"/>
       <detail-recommend :recommend="recommend" ref="recommend"/>
     </scroll>
+    <detail-bottom-bar class="bottom-bar" @addToCart="addToCart"/>
+    <back-top @backImgClick="backImgClick" v-show="isBackTopShow"/>
     
   </div>
 </template>
@@ -23,8 +25,10 @@ import DetailGoodShow from './detailComp/DetailGoodShow.vue'
 import DetailParamInfo from './detailComp/DetailParamInfo.vue'
 import DetailComment from './detailComp/DetailComment.vue'
 import DetailRecommend from './detailComp/DetailRecommend.vue'
+import DetailBottomBar from './detailComp/DetailBottomBar.vue'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
+
 
 import {
   getDetailData, 
@@ -36,11 +40,11 @@ import {
 } from 'network/detail.js'
 
 import {debounce} from 'common/tools.js'
-import {mixin} from 'common/mixin.js'
+import {goodRefreshMixin, backTop} from 'common/mixin.js'
 
 export default {
   name: 'Detail',
-  mixins: [mixin],
+  mixins: [goodRefreshMixin, backTop],
   data() {
     return {
       iid: null,
@@ -51,6 +55,9 @@ export default {
       paramInfo: {},
       comment: {},
       recommend: [],
+      themeTops: [],
+      detailViewRefresh: null,
+      getThemeTops: null,
     }
   },
   components: {
@@ -62,25 +69,26 @@ export default {
     DetailParamInfo,
     DetailComment,
     DetailRecommend,
+    DetailBottomBar,
     Scroll,
   },
   created() {
     this.getDetailData()
     this.getRecommend()
+    this.getThemeTopsFunc()
+    this.getDetailViewRefresh()
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 500)
-    
     this.$refs.recommend.$el.addEventListener('detailImgLoad', () => {
-      refresh()
+      this.detailViewRefresh()
     })
-    console.log('detailrefresh');
   },
   beforeDestroy() {
     this.$bus.$off('goodImgLoad', this.imgListener)
   },
   methods: {
     getDetailData() {
+      // 获取详情页要展示的数据
       this.iid = this.$route.params.iid
       getDetailData(this.iid).then(res => {
         // console.log(res);
@@ -107,15 +115,70 @@ export default {
       })
     },
     getRecommend() {
+      // 得到详情页推荐数据
       getRecommend().then(res => {
         this.recommend = res.data.list
-        // console.log(this.recommend);
-        
       })
     },
-    refresh() {
-      const refresh = debounce(this.$refs.scroll.refresh, 500)
-      refresh()
+
+    getDetailViewRefresh() {
+      // 定义一个详情页刷新函数
+      this.detailViewRefresh = debounce(() => {this.$refs.scroll.refresh 
+      }, 200)
+      // 防抖刷新依然有可能bscroll出现滚动区域计算错误
+      // 无防抖计算正确，但影响性能
+    },
+    detailRefresh() {
+      // 详情页图片加载完成后刷新
+      this.detailViewRefresh()
+      this.getThemeTops()
+      // 获取各标题内容的offsetTop
+    },
+    comImgLoad() {
+      this.detailViewRefresh()
+    },
+    swiperImgLoad() {
+      this.$refs.scroll.refresh()
+    },
+
+    getThemeTopsFunc() {
+      // 使获取函数防抖
+      this.getThemeTops = debounce(() => {
+        this.themeTops = []
+        this.themeTops.push(0)
+        this.themeTops.push(this.$refs.param.$el.offsetTop)
+        this.themeTops.push(this.$refs.comment.$el.offsetTop)
+        this.themeTops.push(this.$refs.recommend.$el.offsetTop)
+        this.themeTops.push(Number.MAX_VALUE)
+        // 最后压入一个最大值是为了方便区间判断
+      }, 200)
+    },
+    titleClick(index) {
+      // 滚动到主题位置
+      this.$refs.scroll.scrollTo(0, -this.themeTops[index])
+    },
+    scroll(position) {
+      // 滚动判断位置来触发对应导航标题活跃状态
+      this.themeTops.forEach((theme,index) => {
+        if(-position.y >= this.themeTops[index] 
+          && -position.y < this.themeTops[index+1] 
+          && this.$refs.nav.currentIndex !== index) {
+            this.$refs.nav.currentIndex = index
+        }
+      })
+      // 判断是否显示回到顶部
+      this.isBackTopShow = -position.y > 1000
+    },
+    addToCart() {
+      const cartInfo = {}
+      cartInfo.iid = this.iid
+      cartInfo.img = this.swiperImgs[0]
+      cartInfo.price = this.goodInfo.truePrice
+      cartInfo.title = this.goodInfo.title
+      cartInfo.desc = this.goodDetail.desc
+      console.log(cartInfo.desc);
+      
+      this.$store.commit('addToCart', cartInfo)
     }
   }
 }
@@ -136,7 +199,14 @@ export default {
   .wrapper {
     position: absolute;
     top: 44px;
-    bottom: 0px;
+    bottom: 58px;
     overflow: hidden;
+  }
+  .bottom-bar {
+    position: fixed;
+    bottom: 0px;
+  }
+  .back-top {
+    bottom: 63px;
   }
 </style>
