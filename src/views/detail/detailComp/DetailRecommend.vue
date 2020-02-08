@@ -21,9 +21,6 @@ export default {
   components: {
     GoodLists,
   }
-  // updated() {
-  //   console.log(this.recommend);
-  // }
 }
 </script>
 

@@ -48,6 +48,10 @@ export default {
 </script>
 
 <style scoped>
+  .nav-bar {
+    background-color: #fff;
+    color: #222;
+  }
   .nav-titles {
     display: flex;
     font-size: 90%;

@@ -34,6 +34,8 @@ export default {
       this.$bus.$emit('goodImgLoad')
     },
     imgClick() {
+      console.log(this.$router);
+      
       this.$router.push('/detail/' + this.goodsItem.iid)
     }
   }
@@ -50,6 +52,7 @@ export default {
   .good-lists-item img {
     max-width: 100%;
     border-radius: 5%;
+    margin-bottom: 6%;
   }
   .good-info {
     font-size: 14px;

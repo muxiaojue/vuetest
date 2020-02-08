@@ -16,7 +16,7 @@
 export default {
   methods: {
     addToCart() {
-      this.$emit('addToCart')
+      this.$emit('addCart')
     },
     buy() {
       console.log('buy');

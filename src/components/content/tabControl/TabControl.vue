@@ -39,7 +39,7 @@ export default {
   .tab-control {
     display: flex;
     text-align: center;
-    font-size: 20px;
+    font-size: 15px;
     background-color: lemonchiffon;
     margin-bottom: 3%;
   }

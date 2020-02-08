@@ -1,5 +1,5 @@
 <template>
-  <div class="detail">
+  <div id="detail">
     <detail-nav @titleClick="titleClick" ref="nav"/>
     <scroll ref="scroll" @scroll="scroll" :probeType="3">
       <detail-swiper :images="swiperImgs" @swiperImgLoad="swiperImgLoad"/>
@@ -10,9 +10,9 @@
       <detail-comment :comment="comment" ref="comment" @comImgLoad="comImgLoad"/>
       <detail-recommend :recommend="recommend" ref="recommend"/>
     </scroll>
-    <detail-bottom-bar class="bottom-bar" @addToCart="addToCart"/>
+    <detail-bottom-bar class="bottom-bar" @addCart="addCart"/>
     <back-top @backImgClick="backImgClick" v-show="isBackTopShow"/>
-    
+    <hint ref="hint"/>
   </div>
 </template>
 
@@ -28,6 +28,7 @@ import DetailRecommend from './detailComp/DetailRecommend.vue'
 import DetailBottomBar from './detailComp/DetailBottomBar.vue'
 
 import Scroll from 'components/common/scroll/Scroll.vue'
+import Hint from 'components/common/hint/Hint.vue'
 
 
 import {
@@ -41,7 +42,7 @@ import {
 
 import {debounce} from 'common/tools.js'
 import {goodRefreshMixin, backTop} from 'common/mixin.js'
-
+import {mapActions} from 'vuex'
 export default {
   name: 'Detail',
   mixins: [goodRefreshMixin, backTop],
@@ -58,6 +59,7 @@ export default {
       themeTops: [],
       detailViewRefresh: null,
       getThemeTops: null,
+      hintMsg: '',
     }
   },
   components: {
@@ -71,6 +73,7 @@ export default {
     DetailRecommend,
     DetailBottomBar,
     Scroll,
+    Hint,
   },
   created() {
     this.getDetailData()
@@ -87,6 +90,7 @@ export default {
     this.$bus.$off('goodImgLoad', this.imgListener)
   },
   methods: {
+    ...mapActions(['addToCart']),
     getDetailData() {
       // 获取详情页要展示的数据
       this.iid = this.$route.params.iid
@@ -169,23 +173,28 @@ export default {
       // 判断是否显示回到顶部
       this.isBackTopShow = -position.y > 1000
     },
-    addToCart() {
+    addCart() {
       const cartInfo = {}
       cartInfo.iid = this.iid
       cartInfo.img = this.swiperImgs[0]
       cartInfo.price = this.goodInfo.truePrice
       cartInfo.title = this.goodInfo.title
       cartInfo.desc = this.goodDetail.desc
-      console.log(cartInfo.desc);
       
-      this.$store.commit('addToCart', cartInfo)
+      this.addToCart(cartInfo).then((res) => {
+        this.$refs.hint.show(res)
+        // this.$hint.show(res)
+        // console.log(this.$hint);
+        // console.log(this.$hint.methods);
+        
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-  .detail {
+  #detail {
     height: 100vh;
     max-width: 100%;
     position: relative;
@@ -195,7 +204,6 @@ export default {
   .detail-swiper {
     margin-top: 0.5%;
   }
-  
   .wrapper {
     position: absolute;
     top: 44px;

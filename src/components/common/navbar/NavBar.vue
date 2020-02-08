@@ -20,6 +20,8 @@ export default {
     /* 设置line-height可以实现垂直居中 */
     text-align: center;
     box-shadow: 0px 1px 1px rgba(100, 100, 100, .1);
+    background-color: salmon;
+    color: #fff;
   }
 
   /* 实现固定在顶部随页面滑动，也可以用position: sticky实现 */
