@@ -24,12 +24,3 @@ export function getCategoryDetail(miniWallkey, type) {
     }
   })
 }
-
-export class Detail {
-  constructor(goodInfo){
-    this.title = goodInfo.title
-    this.img = goodInfo.img
-    this.price = goodInfo.price
-    this.cfav = goodInfo.cfav
-  } 
-}

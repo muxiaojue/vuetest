@@ -19,7 +19,7 @@ import CategoryNav from './categoryComp/CategoryNav.vue'
 import CategoryList from './categoryComp/CategoryList.vue'
 import CategorySub from './categoryComp/CategorySub.vue'
 
-import {getCategory, getSubCategory, getCategoryDetail, Detail} from 'network/category.js'
+import {getCategory, getSubCategory, getCategoryDetail} from 'network/category.js'
 
 import TabControl from 'components/content/tabControl/TabControl.vue'
 import GoodLists from 'components/content/goodLists/GoodLists.vue'
@@ -64,17 +64,17 @@ export default {
     getInitData() {
       getCategory().then(res => {
         this.categoryList = res.data.category.list
-        this.getSubCategory(0)
-        this.getCategoryDetail(this.miniWallkey, this.tabType)
+        this.getSubCategory()
+        this.getCategoryDetail()
       })
     },
-    getSubCategory(index) {
+    getSubCategory() {
       getSubCategory(this.maitKey).then(res => {
         this.subCategory = res.data.list
       })
     },
-    getCategoryDetail(miniWallkey, type) {
-      getCategoryDetail(miniWallkey, type).then(res => {
+    getCategoryDetail() {
+      getCategoryDetail(this.miniWallkey, this.tabType).then(res => {
         // console.log(res)
         this.categoryDetail = res
       })
@@ -83,13 +83,13 @@ export default {
     // 事件监听方法
     categoryClick(index) {
       this.currentCateIndex = index
-      this.getSubCategory(index)
-      this.getCategoryDetail(this.miniWallkey, this.tabType)
+      this.getSubCategory()
+      this.getCategoryDetail()
     },
     tabClick(index) {
       this.currentTabIndex = index
-      this.getSubCategory(index)
-      this.getCategoryDetail(this.miniWallkey, this.tabType)
+      this.getSubCategory()
+      this.getCategoryDetail()
     }
   }
   

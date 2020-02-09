@@ -121,10 +121,6 @@ export default {
     // console.log(this.$bus._events);
     // 离开首页时取消goodListsItem加载的事件总线监听
   },
-  destroyed() {
-    console.log('destroyed');
-    
-  },
   computed: {
     showGoods() {
       return this.homeGoods[this.currentType].list
@@ -176,10 +172,6 @@ export default {
     /* vh是视图单位，100vh即满视图 */
     position: relative;
   }
-  /* .swiperBox { */
-    /* 这个类是在封装时定义的 */
-    /* margin-top: 44px; */
-  /* } */
   .tab-control {
     /* position: sticky; */
     /* sticky在better-scroll内失效 */
@@ -198,10 +190,4 @@ export default {
     overflow: hidden;
   }
 
-  /* .fixed {
-    position: fixed;
-    top: 44px;
-    left: 0px;
-    right: 0px;
-  } */
 </style>

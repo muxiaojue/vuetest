@@ -33,7 +33,7 @@ export default {
     itemClick(){
       if(this.$route.path != this.path){
         // 不添加判断条件时，重复点击一个组件两次，浏览器报错，但可以执行程序
-        this.$router.push(this.path)
+        this.$router.replace(this.path)
         // 可以增加操作，点击当前页面会刷新
       }
     }

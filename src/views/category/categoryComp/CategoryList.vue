@@ -43,7 +43,6 @@ export default {
     background-color: rgba(233, 233, 233, 0.753);
     text-align: center;
     font-size: 15px;
-    /* align-items: center; */
   }
   .category-list .list-item {
     flex: auto;
